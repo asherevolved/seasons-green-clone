@@ -42,9 +42,9 @@ const Services = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 bg-card border-b border-border z-40 px-4 py-4">
-        <div className="max-w-lg mx-auto flex items-center gap-4">
+    <div className="min-h-screen bg-background pb-20 md:pb-6">
+      <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
@@ -56,7 +56,7 @@ const Services = () => {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6 md:space-y-8">
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -85,20 +85,20 @@ const Services = () => {
         </div>
 
         {/* Service Cards */}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredServices.map((service, index) => (
-            <Card key={service.id} className="overflow-hidden">
+            <Card key={service.id} className="overflow-hidden flex flex-col">
               <img
                 src={getServiceImage(index)}
                 alt={service.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 md:h-56 object-cover"
               />
-              <div className="p-4">
+              <div className="p-4 flex-1 flex flex-col">
                 <h3 className="text-lg font-semibold mb-2">{service.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3">
+                <p className="text-sm text-muted-foreground mb-3 flex-1">
                   {service.description}
                 </p>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-auto">
                   <span className="text-base font-medium">
                     Starting at ${service.price}
                   </span>

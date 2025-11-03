@@ -1,13 +1,14 @@
 import { MapPin, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { DesktopNav } from "@/components/DesktopNav";
 
 export const LocationHeader = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 bg-card border-b border-border z-40 px-4 py-3">
-      <div className="max-w-lg mx-auto flex items-center justify-between">
+    <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2 flex-1">
           <MapPin className="w-5 h-5 text-primary" />
           <div className="flex flex-col">
@@ -20,9 +21,10 @@ export const LocationHeader = () => {
             </p>
           </div>
         </div>
+        <DesktopNav />
         <Button
           size="icon"
-          className="rounded-full bg-primary hover:bg-primary/90"
+          className="md:hidden rounded-full bg-primary hover:bg-primary/90"
           onClick={() => navigate("/profile")}
         >
           <User className="w-5 h-5" />

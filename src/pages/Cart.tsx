@@ -40,9 +40,9 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <header className="sticky top-0 bg-card border-b border-border z-40 px-4 py-4">
-        <div className="max-w-lg mx-auto flex items-center gap-4">
+    <div className="min-h-screen bg-background pb-24 md:pb-6">
+      <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -53,9 +53,12 @@ const Cart = () => {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
-        {/* Cart Items */}
-        <div className="space-y-3">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Cart Items */}
+          <div className="space-y-3">
           {cart.map((item) => (
             <Card key={item.service.id} className="p-3">
               <div className="flex items-center gap-3">
@@ -97,10 +100,13 @@ const Cart = () => {
               </div>
             </Card>
           ))}
+          </div>
         </div>
 
-        {/* Schedule Service */}
-        <Card className="p-6">
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Schedule Service */}
+          <Card className="p-6">
           <h2 className="text-xl font-bold mb-4">Schedule Service</h2>
           <Calendar
             mode="single"
@@ -147,11 +153,13 @@ const Cart = () => {
             </div>
           </div>
         </Card>
+        </div>
+        </div>
       </main>
 
       {/* Fixed Bottom Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4">
-        <div className="max-w-lg mx-auto">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4">
+        <div className="max-w-2xl mx-auto">
           <Button
             className="w-full h-14 text-lg bg-primary hover:bg-primary/90"
             onClick={handleProceed}
@@ -159,6 +167,16 @@ const Cart = () => {
             Proceed to Book
           </Button>
         </div>
+      </div>
+
+      {/* Desktop Button */}
+      <div className="hidden md:block max-w-4xl mx-auto px-4 md:px-6 pb-6">
+        <Button
+          className="w-full h-14 text-lg bg-primary hover:bg-primary/90"
+          onClick={handleProceed}
+        >
+          Proceed to Book
+        </Button>
       </div>
     </div>
   );

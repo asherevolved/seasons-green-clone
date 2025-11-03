@@ -23,10 +23,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-20 md:pb-6">
       <LocationHeader />
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6 md:space-y-8">
         {/* Search Bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -38,8 +38,8 @@ const Index = () => {
 
         {/* Categories */}
         <section>
-          <h2 className="text-2xl font-bold mb-4">Categories</h2>
-          <div className="grid grid-cols-4 gap-4">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Categories</h2>
+          <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
             <CategoryIcon
               icon={Sprout}
               label="Lawn Mowing"
@@ -64,12 +64,12 @@ const Index = () => {
         </section>
 
         {/* Promotional Banner */}
-        <section className="bg-secondary rounded-2xl p-6 flex items-center gap-4">
+        <section className="bg-secondary rounded-2xl p-6 md:p-8 flex items-center gap-4 md:gap-6">
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-primary mb-2">
+            <h3 className="text-xl md:text-2xl font-bold text-primary mb-2">
               Exclusive essential landscaping bundle
             </h3>
-            <p className="text-sm text-secondary-foreground mb-4">
+            <p className="text-sm md:text-base text-secondary-foreground mb-4">
               Mowing, trimming and weeding with a single booking!
             </p>
             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -79,14 +79,14 @@ const Index = () => {
           <img
             src={gardeningToolsImg}
             alt="Gardening tools"
-            className="w-32 h-32 object-cover rounded-xl"
+            className="w-32 h-32 md:w-48 md:h-48 object-cover rounded-xl"
           />
         </section>
 
         {/* Most Popular */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold">Most Popular</h2>
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold">Most Popular</h2>
             <Button
               variant="ghost"
               className="text-primary hover:text-primary/80"
@@ -95,17 +95,16 @@ const Index = () => {
               See all
             </Button>
           </div>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {popularServices.map((service) => (
-              <div key={service.id} className="relative">
-                <ServiceCard
-                  image={service.image}
-                  title={service.title}
-                  description={service.description}
-                  badge={service.badge}
-                  onAdd={() => handleAddService(service)}
-                />
-              </div>
+              <ServiceCard
+                key={service.id}
+                image={service.image}
+                title={service.title}
+                description={service.description}
+                badge={service.badge}
+                onAdd={() => handleAddService(service)}
+              />
             ))}
           </div>
         </section>

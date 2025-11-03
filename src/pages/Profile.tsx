@@ -21,16 +21,19 @@ import { bookings, addresses } from "@/lib/data";
 
 const Profile = () => {
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <header className="bg-card border-b border-border px-4 py-6">
-        <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-background pb-20 md:pb-6">
+      <header className="bg-card border-b border-border px-4 md:px-6 py-6">
+        <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold text-center">My Profile</h1>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
-        {/* Profile Header */}
-        <Card className="p-6">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Profile Header */}
+          <Card className="p-6">
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20">
               <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" />
@@ -89,8 +92,11 @@ const Profile = () => {
             </Button>
           </Card>
         </section>
+        </div>
 
-        {/* Booking History */}
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Booking History */}
         <section>
           <h3 className="text-lg font-semibold mb-3">Booking History</h3>
           <Card className="p-4 space-y-3">
@@ -179,6 +185,8 @@ const Profile = () => {
           <LogOut className="w-5 h-5 mr-2" />
           Log Out
         </Button>
+        </div>
+        </div>
       </main>
 
       <BottomNav />

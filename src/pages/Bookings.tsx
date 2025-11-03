@@ -9,16 +9,17 @@ const Bookings = () => {
   const pastBookings = bookings.filter((b) => b.status === "completed");
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <header className="bg-card border-b border-border px-4 py-6">
-        <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-background pb-20 md:pb-6">
+      <header className="bg-card border-b border-border px-4 md:px-6 py-6">
+        <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold">My Bookings</h1>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
-        {/* Upcoming Bookings */}
-        <section>
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          {/* Upcoming Bookings */}
+          <section>
           <h2 className="text-xl font-semibold mb-4">Upcoming</h2>
           {upcomingBookings.length === 0 ? (
             <Card className="p-8 text-center">
@@ -66,10 +67,10 @@ const Bookings = () => {
               ))}
             </div>
           )}
-        </section>
+          </section>
 
-        {/* Past Bookings */}
-        <section>
+          {/* Past Bookings */}
+          <section>
           <h2 className="text-xl font-semibold mb-4">Past Bookings</h2>
           <div className="space-y-3">
             {pastBookings.map((booking) => (
@@ -95,7 +96,8 @@ const Bookings = () => {
               </Card>
             ))}
           </div>
-        </section>
+          </section>
+        </div>
       </main>
 
       <BottomNav />

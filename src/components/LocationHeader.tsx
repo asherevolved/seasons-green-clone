@@ -7,9 +7,9 @@ export const LocationHeader = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-3">
+    <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-3 animate-fade-in">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-2 flex-1">
+        <div className="flex items-center gap-2 flex-1 hover:scale-105 transition-transform duration-200 cursor-pointer">
           <MapPin className="w-5 h-5 text-primary" />
           <div className="flex flex-col">
             <div className="flex items-center gap-1">
@@ -24,7 +24,7 @@ export const LocationHeader = () => {
         <DesktopNav />
         <Button
           size="icon"
-          className="md:hidden rounded-full bg-primary hover:bg-primary/90"
+          className="md:hidden rounded-full bg-primary hover:bg-primary/90 hover:scale-110 active:scale-95 transition-transform duration-200"
           onClick={() => navigate("/profile")}
         >
           <User className="w-5 h-5" />

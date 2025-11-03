@@ -49,6 +49,7 @@ const Services = () => {
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
+            className="hover:scale-110 active:scale-95 transition-transform duration-200"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -87,7 +88,7 @@ const Services = () => {
         {/* Service Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredServices.map((service, index) => (
-            <Card key={service.id} className="overflow-hidden flex flex-col">
+            <Card key={service.id} className="overflow-hidden flex flex-col hover-scale transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
               <img
                 src={getServiceImage(index)}
                 alt={service.title}
@@ -103,7 +104,7 @@ const Services = () => {
                     Starting at ${service.price}
                   </span>
                   <Button
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl hover:scale-105 active:scale-95 transition-all duration-200"
                     onClick={() => handleBook(service)}
                   >
                     Book Service

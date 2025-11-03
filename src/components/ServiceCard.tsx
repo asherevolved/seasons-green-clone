@@ -18,7 +18,7 @@ export const ServiceCard = ({
   onAdd,
 }: ServiceCardProps) => {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden hover-scale transition-all duration-300 hover:shadow-lg cursor-pointer">
       <div className="flex items-center gap-3 p-3">
         <img
           src={image}
@@ -31,7 +31,7 @@ export const ServiceCard = ({
         </div>
         <Button
           size="icon"
-          className="rounded-full bg-primary hover:bg-primary/90 shrink-0"
+          className="rounded-full bg-primary hover:bg-primary/90 shrink-0 transition-transform hover:scale-110 active:scale-95"
           onClick={onAdd}
         >
           <Plus className="w-5 h-5" />

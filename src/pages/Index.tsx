@@ -37,7 +37,7 @@ const Index = () => {
         </div>
 
         {/* Categories */}
-        <section>
+        <section className="animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Categories</h2>
           <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
             <CategoryIcon
@@ -64,7 +64,7 @@ const Index = () => {
         </section>
 
         {/* Promotional Banner */}
-        <section className="bg-secondary rounded-2xl p-6 md:p-8 flex items-center gap-4 md:gap-6">
+        <section className="bg-secondary rounded-2xl p-6 md:p-8 flex items-center gap-4 md:gap-6 animate-fade-in hover-scale cursor-pointer transition-all duration-300">
           <div className="flex-1">
             <h3 className="text-xl md:text-2xl font-bold text-primary mb-2">
               Exclusive essential landscaping bundle
@@ -72,7 +72,7 @@ const Index = () => {
             <p className="text-sm md:text-base text-secondary-foreground mb-4">
               Mowing, trimming and weeding with a single booking!
             </p>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 active:scale-95 transition-all duration-200">
               Know more
             </Button>
           </div>
@@ -84,27 +84,28 @@ const Index = () => {
         </section>
 
         {/* Most Popular */}
-        <section>
+        <section className="animate-fade-in">
           <div className="flex items-center justify-between mb-4 md:mb-6">
             <h2 className="text-2xl md:text-3xl font-bold">Most Popular</h2>
             <Button
               variant="ghost"
-              className="text-primary hover:text-primary/80"
+              className="text-primary hover:text-primary/80 hover:scale-105 transition-all duration-200"
               onClick={() => navigate("/services")}
             >
               See all
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            {popularServices.map((service) => (
-              <ServiceCard
-                key={service.id}
-                image={service.image}
-                title={service.title}
-                description={service.description}
-                badge={service.badge}
-                onAdd={() => handleAddService(service)}
-              />
+            {popularServices.map((service, index) => (
+              <div key={service.id} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+                <ServiceCard
+                  image={service.image}
+                  title={service.title}
+                  description={service.description}
+                  badge={service.badge}
+                  onAdd={() => handleAddService(service)}
+                />
+              </div>
             ))}
           </div>
         </section>

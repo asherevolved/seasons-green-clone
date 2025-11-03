@@ -20,10 +20,10 @@ export const DesktopNav = () => {
       {navItems.map((item) => (
         <NavLink key={item.path} to={item.path}>
           {({ isActive }) => (
-            <Button
-              variant={isActive ? "secondary" : "ghost"}
-              className="gap-2"
-            >
+          <Button
+            variant={isActive ? "secondary" : "ghost"}
+            className="gap-2 hover:scale-105 active:scale-95 transition-all duration-200"
+          >
               <item.icon className="w-4 h-4" />
               <span>{item.label}</span>
             </Button>
@@ -34,12 +34,12 @@ export const DesktopNav = () => {
         {({ isActive }) => (
           <Button
             variant={isActive ? "secondary" : "ghost"}
-            className="gap-2 relative"
+            className="gap-2 relative hover:scale-105 active:scale-95 transition-all duration-200"
           >
             <ShoppingCart className="w-4 h-4" />
             <span>Cart</span>
             {cartCount > 0 && (
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary">
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary animate-pulse">
                 {cartCount}
               </Badge>
             )}

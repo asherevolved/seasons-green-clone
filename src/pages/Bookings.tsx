@@ -19,17 +19,17 @@ const Bookings = () => {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* Upcoming Bookings */}
-          <section>
+          <section className="animate-fade-in">
           <h2 className="text-xl font-semibold mb-4">Upcoming</h2>
           {upcomingBookings.length === 0 ? (
-            <Card className="p-8 text-center">
+            <Card className="p-8 text-center hover:shadow-md transition-all duration-300">
               <Calendar className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
               <p className="text-muted-foreground">No upcoming bookings</p>
             </Card>
           ) : (
             <div className="space-y-3">
-              {upcomingBookings.map((booking) => (
-                <Card key={booking.id} className="p-4">
+              {upcomingBookings.map((booking, index) => (
+                <Card key={booking.id} className="p-4 hover-scale transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
                   <div className="flex items-start gap-3">
                     <div className="w-16 h-16 bg-secondary rounded-lg flex items-center justify-center shrink-0">
                       <Calendar className="w-8 h-8 text-primary" />
@@ -70,11 +70,11 @@ const Bookings = () => {
           </section>
 
           {/* Past Bookings */}
-          <section>
+          <section className="animate-fade-in" style={{ animationDelay: '150ms' }}>
           <h2 className="text-xl font-semibold mb-4">Past Bookings</h2>
           <div className="space-y-3">
-            {pastBookings.map((booking) => (
-              <Card key={booking.id} className="p-4">
+            {pastBookings.map((booking, index) => (
+              <Card key={booking.id} className="p-4 hover:shadow-md transition-all duration-300 animate-fade-in" style={{ animationDelay: `${(index + 2) * 100}ms` }}>
                 <div className="flex items-start gap-3">
                   <div className="w-16 h-16 bg-secondary rounded-lg flex items-center justify-center shrink-0">
                     <Calendar className="w-8 h-8 text-primary" />

@@ -31,9 +31,9 @@ const Profile = () => {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         {/* Left Column */}
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
           {/* Profile Header */}
-          <Card className="p-6">
+          <Card className="p-6 hover:shadow-md transition-all duration-300">
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20">
               <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" />
@@ -49,8 +49,8 @@ const Profile = () => {
         {/* Personal Information */}
         <section>
           <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
-          <Card className="p-4">
-            <button className="flex items-center gap-3 w-full text-left">
+          <Card className="p-4 hover:shadow-md transition-all duration-300">
+            <button className="flex items-center gap-3 w-full text-left hover:bg-accent rounded-lg p-2 -m-2 transition-colors">
               <User className="w-5 h-5" />
               <span className="flex-1">Edit Profile</span>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -61,7 +61,7 @@ const Profile = () => {
         {/* Saved Addresses */}
         <section>
           <h3 className="text-lg font-semibold mb-3">Saved Addresses</h3>
-          <Card className="p-4 space-y-3">
+          <Card className="p-4 space-y-3 hover:shadow-md transition-all duration-300">
             {addresses.map((address) => (
               <div
                 key={address.id}
@@ -95,11 +95,11 @@ const Profile = () => {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in" style={{ animationDelay: '150ms' }}>
           {/* Booking History */}
         <section>
           <h3 className="text-lg font-semibold mb-3">Booking History</h3>
-          <Card className="p-4 space-y-3">
+          <Card className="p-4 space-y-3 hover:shadow-md transition-all duration-300">
             {bookings.map((booking) => (
               <div
                 key={booking.id}
@@ -133,7 +133,7 @@ const Profile = () => {
         {/* Payment Methods */}
         <section>
           <h3 className="text-lg font-semibold mb-3">Payment Methods</h3>
-          <Card className="p-4 space-y-3">
+          <Card className="p-4 space-y-3 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-3">
               <CreditCard className="w-5 h-5" />
               <div className="flex-1">
@@ -154,7 +154,7 @@ const Profile = () => {
         {/* App Settings */}
         <section>
           <h3 className="text-lg font-semibold mb-3">App Settings</h3>
-          <Card className="p-4 space-y-4">
+          <Card className="p-4 space-y-4 hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Bell className="w-5 h-5" />

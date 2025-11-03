@@ -43,7 +43,7 @@ const Cart = () => {
     <div className="min-h-screen bg-background pb-24 md:pb-6">
       <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="hover:scale-110 active:scale-95 transition-transform duration-200">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-xl font-bold flex-1">Your Cart</h1>
@@ -59,8 +59,8 @@ const Cart = () => {
         <div className="space-y-6">
           {/* Cart Items */}
           <div className="space-y-3">
-          {cart.map((item) => (
-            <Card key={item.service.id} className="p-3">
+          {cart.map((item, index) => (
+            <Card key={item.service.id} className="p-3 animate-fade-in hover:shadow-md transition-all duration-300" style={{ animationDelay: `${index * 100}ms` }}>
               <div className="flex items-center gap-3">
                 <img
                   src={item.service.image}
@@ -77,7 +77,7 @@ const Cart = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8 rounded-lg border-2"
+                    className="h-8 w-8 rounded-lg border-2 hover:scale-110 active:scale-95 transition-transform duration-200"
                     onClick={() =>
                       updateQuantity(item.service.id, item.quantity - 1)
                     }
@@ -89,7 +89,7 @@ const Cart = () => {
                   </span>
                   <Button
                     size="icon"
-                    className="h-8 w-8 rounded-lg bg-primary"
+                    className="h-8 w-8 rounded-lg bg-primary hover:scale-110 active:scale-95 transition-transform duration-200"
                     onClick={() =>
                       updateQuantity(item.service.id, item.quantity + 1)
                     }
@@ -104,9 +104,9 @@ const Cart = () => {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
           {/* Schedule Service */}
-          <Card className="p-6">
+          <Card className="p-6 transition-all duration-300 hover:shadow-md">
           <h2 className="text-xl font-bold mb-4">Schedule Service</h2>
           <Calendar
             mode="single"
@@ -161,7 +161,7 @@ const Cart = () => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4">
         <div className="max-w-2xl mx-auto">
           <Button
-            className="w-full h-14 text-lg bg-primary hover:bg-primary/90"
+            className="w-full h-14 text-lg bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all duration-200"
             onClick={handleProceed}
           >
             Proceed to Book
@@ -172,7 +172,7 @@ const Cart = () => {
       {/* Desktop Button */}
       <div className="hidden md:block max-w-4xl mx-auto px-4 md:px-6 pb-6">
         <Button
-          className="w-full h-14 text-lg bg-primary hover:bg-primary/90"
+          className="w-full h-14 text-lg bg-primary hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all duration-200"
           onClick={handleProceed}
         >
           Proceed to Book

@@ -4,10 +4,8 @@ import {
   User,
   ChevronRight,
   Home,
-  Briefcase,
   Edit,
   Plus,
-  CreditCard,
   Bell,
   Mail,
   Lock,
@@ -274,27 +272,6 @@ const Profile = () => {
             >
               View All
               <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Card>
-        </section>
-
-        {/* Payment Methods */}
-        <section>
-          <h3 className="text-lg font-semibold mb-3">Payment Methods</h3>
-          <Card className="p-4 space-y-3 hover:shadow-md transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <CreditCard className="w-5 h-5" />
-              <div className="flex-1">
-                <p className="font-semibold">Visa **** 1234</p>
-                <p className="text-sm text-muted-foreground">Expires 12/25</p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              className="w-full justify-center text-primary bg-secondary"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add New Payment Method
             </Button>
           </Card>
         </section>

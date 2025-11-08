@@ -1,4 +1,4 @@
-import { ArrowLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BottomNav } from "@/components/BottomNav";
@@ -44,16 +44,8 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate(-1)}
-            className="hover:scale-110 active:scale-95 transition-transform duration-200"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <h1 className="text-xl font-bold flex-1">Our Services</h1>
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-xl font-bold">Our Services</h1>
         </div>
       </header>
 

@@ -27,12 +27,9 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      // Validate phone number
-      phoneSchema.parse(phone);
-
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
-          phone,
+          email,
           password,
         });
         
@@ -40,19 +37,22 @@ const Auth = () => {
         toast.success("Logged in successfully!");
         navigate("/");
       } else {
+        // Validate phone number for signup
+        phoneSchema.parse(phone);
+        
         const { error } = await supabase.auth.signUp({
-          phone,
+          email,
           password,
           options: {
             data: {
               full_name: fullName,
-              email: email,
+              phone: phone,
             },
           },
         });
 
         if (error) throw error;
-        toast.success("Account created! Please check your phone for verification.");
+        toast.success("Account created! Please check your email for verification.");
         navigate("/");
       }
     } catch (error: any) {
@@ -96,26 +96,26 @@ const Auth = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="phone"
-              type="tel"
-              placeholder="+91XXXXXXXXXX"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
           {!isLogin && (
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="phone"
+                type="tel"
+                placeholder="+91XXXXXXXXXX"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 required
               />
             </div>

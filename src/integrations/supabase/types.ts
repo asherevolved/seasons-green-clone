@@ -16,27 +16,48 @@ export type Database = {
     Tables: {
       addresses: {
         Row: {
-          address_line: string
+          address_line: string | null
+          area: string | null
+          city: string | null
           created_at: string
+          house_number: string | null
           id: string
+          is_default: boolean | null
+          label: string | null
           lat: number
           lng: number
+          pincode: string | null
+          street: string | null
           user_id: string
         }
         Insert: {
-          address_line: string
+          address_line?: string | null
+          area?: string | null
+          city?: string | null
           created_at?: string
+          house_number?: string | null
           id?: string
+          is_default?: boolean | null
+          label?: string | null
           lat: number
           lng: number
+          pincode?: string | null
+          street?: string | null
           user_id: string
         }
         Update: {
-          address_line?: string
+          address_line?: string | null
+          area?: string | null
+          city?: string | null
           created_at?: string
+          house_number?: string | null
           id?: string
+          is_default?: boolean | null
+          label?: string | null
           lat?: number
           lng?: number
+          pincode?: string | null
+          street?: string | null
           user_id?: string
         }
         Relationships: []

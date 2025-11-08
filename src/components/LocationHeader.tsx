@@ -1,4 +1,4 @@
-import { MapPin, ChevronDown, User, Loader2, MapPinPlus, Navigation } from "lucide-react";
+import { MapPin, ChevronDown, User, Loader2, MapPinPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { DesktopNav } from "@/components/DesktopNav";
@@ -36,8 +36,6 @@ export const LocationHeader = () => {
     if (user) {
       loadSavedAddresses(user.id);
       loadDefaultAddress(user.id);
-    } else {
-      fetchLocation();
     }
   };
 
@@ -72,14 +70,7 @@ export const LocationHeader = () => {
         coordinates: { lat: data.lat, lng: data.lng },
         isLoading: false,
       });
-    } else {
-      fetchLocation();
     }
-  };
-
-  const handleDetectLocation = () => {
-    fetchLocation();
-    toast.success("Detecting your current location...");
   };
 
   const handleSelectAddress = (address: any) => {
@@ -115,15 +106,11 @@ export const LocationHeader = () => {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-80 max-h-96 overflow-y-auto bg-card z-50">
-            <DropdownMenuLabel>Location Options</DropdownMenuLabel>
+            <DropdownMenuLabel>Your Addresses</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleDetectLocation} className="cursor-pointer">
-              <Navigation className="w-4 h-4 mr-2" />
-              Detect Current Location
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setIsManualLocationOpen(true)} className="cursor-pointer">
               <MapPinPlus className="w-4 h-4 mr-2" />
-              Add Manual Address
+              Add New Address
             </DropdownMenuItem>
             
             {savedAddresses.length > 0 && (
@@ -155,6 +142,12 @@ export const LocationHeader = () => {
                   </DropdownMenuItem>
                 ))}
               </>
+            )}
+            
+            {savedAddresses.length === 0 && (
+              <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                No saved addresses yet. Add one to get started!
+              </div>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

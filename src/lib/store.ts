@@ -23,10 +23,10 @@ interface StoreState {
 export const useStore = create<StoreState>((set, get) => ({
   cart: [],
   location: {
-    address: "Getting location...",
-    area: "Please wait...",
+    address: "Select your address",
+    area: "Click above to add your location",
     coordinates: null,
-    isLoading: true,
+    isLoading: false,
   },
   
   addToCart: (service) => {

@@ -14,6 +14,7 @@ import {
   ArrowRight,
   LogOut,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,6 +23,17 @@ import { BottomNav } from "@/components/BottomNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { EditAddressDialog } from "@/components/EditAddressDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -30,6 +42,8 @@ const Profile = () => {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [editingAddress, setEditingAddress] = useState<any>(null);
+  const [deletingAddressId, setDeletingAddressId] = useState<string | null>(null);
 
   useEffect(() => {
     checkUser();
@@ -94,6 +108,22 @@ const Profile = () => {
     navigate("/auth");
   };
 
+  const handleDeleteAddress = async (addressId: string) => {
+    const { error } = await supabase
+      .from("addresses")
+      .delete()
+      .eq("id", addressId);
+
+    if (error) {
+      toast.error("Failed to delete address");
+      return;
+    }
+
+    toast.success("Address deleted successfully!");
+    setDeletingAddressId(null);
+    checkUser(); // Refresh data
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -152,18 +182,38 @@ const Profile = () => {
                   key={address.id}
                   className="flex items-start gap-3 pb-3 last:pb-0 border-b last:border-b-0"
                 >
-                  <Home className="w-5 h-5 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-semibold">{address.label || "Address"}</p>
+                  <Home className="w-5 h-5 mt-0.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">{address.label || "Address"}</p>
+                      {address.is_default && (
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                          Default
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       {[address.house_number, address.street, address.area, address.city, address.pincode]
                         .filter(Boolean)
                         .join(", ")}
                     </p>
                   </div>
-                  <Button variant="ghost" size="icon">
-                    <Edit className="w-4 h-4" />
-                  </Button>
+                  <div className="flex gap-1 shrink-0">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => setEditingAddress(address)}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => setDeletingAddressId(address.id)}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
               ))
             )}
@@ -289,6 +339,36 @@ const Profile = () => {
       </main>
 
       <BottomNav />
+      
+      <EditAddressDialog
+        open={!!editingAddress}
+        onOpenChange={(open) => !open && setEditingAddress(null)}
+        address={editingAddress}
+        onSaved={() => {
+          setEditingAddress(null);
+          checkUser(); // Refresh data
+        }}
+      />
+
+      <AlertDialog open={!!deletingAddressId} onOpenChange={(open) => !open && setDeletingAddressId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Address</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this address? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deletingAddressId && handleDeleteAddress(deletingAddressId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

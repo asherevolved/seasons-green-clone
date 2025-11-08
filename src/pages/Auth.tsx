@@ -18,6 +18,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState("+91");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
 
@@ -45,6 +46,7 @@ const Auth = () => {
           options: {
             data: {
               full_name: fullName,
+              email: email,
             },
           },
         });
@@ -103,10 +105,21 @@ const Auth = () => {
               onChange={(e) => setPhone(e.target.value)}
               required
             />
-            <p className="text-xs text-muted-foreground">
-              Enter Indian phone number with country code (+91)
-            </p>
           </div>
+
+          {!isLogin && (
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>

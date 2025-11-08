@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,17 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useStore } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ManualLocationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaved?: () => void;
 }
 
 export const ManualLocationDialog = ({
   open,
   onOpenChange,
+  onSaved,
 }: ManualLocationDialogProps) => {
   const setLocation = useStore((state) => state.setLocation);
   const [houseNumber, setHouseNumber] = useState("");
@@ -28,8 +32,20 @@ export const ManualLocationDialog = ({
   const [area, setArea] = useState("");
   const [city, setCity] = useState("");
   const [pincode, setPincode] = useState("");
+  const [label, setLabel] = useState("");
+  const [saveAddress, setSaveAddress] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
-  const handleSave = () => {
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
+
+  const handleSave = async () => {
     if (!houseNumber || !street || !area || !city || !pincode) {
       toast.error("Please fill in all fields");
       return;
@@ -44,7 +60,35 @@ export const ManualLocationDialog = ({
       isLoading: false,
     });
 
-    toast.success("Location updated successfully!");
+    // Save to database if user is logged in and wants to save
+    if (user && saveAddress) {
+      const { error } = await supabase
+        .from("addresses")
+        .insert({
+          user_id: user.id,
+          house_number: houseNumber,
+          street: street,
+          area: area,
+          city: city,
+          pincode: pincode,
+          label: label || `${houseNumber}, ${street}`,
+          address_line: fullAddress,
+          lat: 0, // Will be geocoded later if needed
+          lng: 0,
+          is_default: false,
+        });
+
+      if (error) {
+        toast.error("Failed to save address");
+        console.error(error);
+      } else {
+        toast.success("Address saved successfully!");
+        onSaved?.();
+      }
+    } else {
+      toast.success("Location updated successfully!");
+    }
+
     onOpenChange(false);
     
     // Clear form
@@ -53,6 +97,8 @@ export const ManualLocationDialog = ({
     setArea("");
     setCity("");
     setPincode("");
+    setLabel("");
+    setSaveAddress(false);
   };
 
   return (
@@ -110,6 +156,32 @@ export const ManualLocationDialog = ({
               />
             </div>
           </div>
+          {user && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="label">Address Label (Optional)</Label>
+                <Input
+                  id="label"
+                  placeholder="e.g., Home, Office"
+                  value={label}
+                  onChange={(e) => setLabel(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="saveAddress"
+                  checked={saveAddress}
+                  onCheckedChange={(checked) => setSaveAddress(checked as boolean)}
+                />
+                <label
+                  htmlFor="saveAddress"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Save this address for future use
+                </label>
+              </div>
+            </>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

@@ -20,7 +20,6 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { BottomNav } from "@/components/BottomNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { bookings, addresses } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -28,6 +27,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -49,9 +50,34 @@ const Profile = () => {
       .from("profiles")
       .select("*")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
     
     setProfile(profileData);
+
+    // Fetch addresses
+    const { data: addressesData } = await supabase
+      .from("addresses")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("is_default", { ascending: false })
+      .order("created_at", { ascending: false });
+    
+    setAddresses(addressesData || []);
+
+    // Fetch bookings with service details
+    const { data: bookingsData } = await supabase
+      .from("bookings")
+      .select(`
+        *,
+        services (
+          title
+        )
+      `)
+      .eq("user_id", user.id)
+      .order("start_time", { ascending: false })
+      .limit(5);
+    
+    setBookings(bookingsData || []);
     setIsLoading(false);
   };
 
@@ -111,30 +137,33 @@ const Profile = () => {
         <section>
           <h3 className="text-lg font-semibold mb-3">Saved Addresses</h3>
           <Card className="p-4 space-y-3 hover:shadow-md transition-all duration-300">
-            {addresses.map((address) => (
-              <div
-                key={address.id}
-                className="flex items-start gap-3 pb-3 last:pb-0 border-b last:border-b-0"
-              >
-                {address.icon === "home" ? (
+            {addresses.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">No saved addresses yet</p>
+            ) : (
+              addresses.map((address) => (
+                <div
+                  key={address.id}
+                  className="flex items-start gap-3 pb-3 last:pb-0 border-b last:border-b-0"
+                >
                   <Home className="w-5 h-5 mt-0.5" />
-                ) : (
-                  <Briefcase className="w-5 h-5 mt-0.5" />
-                )}
-                <div className="flex-1">
-                  <p className="font-semibold">{address.label}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {address.address}
-                  </p>
+                  <div className="flex-1">
+                    <p className="font-semibold">{address.label || "Address"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {[address.house_number, address.street, address.area, address.city, address.pincode]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </p>
+                  </div>
+                  <Button variant="ghost" size="icon">
+                    <Edit className="w-4 h-4" />
+                  </Button>
                 </div>
-                <Button variant="ghost" size="icon">
-                  <Edit className="w-4 h-4" />
-                </Button>
-              </div>
-            ))}
+              ))
+            )}
             <Button
               variant="ghost"
               className="w-full justify-center text-primary"
+              onClick={() => navigate("/")}
             >
               <Plus className="w-4 h-4 mr-2" />
               Add New Address
@@ -149,29 +178,42 @@ const Profile = () => {
         <section>
           <h3 className="text-lg font-semibold mb-3">Booking History</h3>
           <Card className="p-4 space-y-3 hover:shadow-md transition-all duration-300">
-            {bookings.map((booking) => (
-              <div
-                key={booking.id}
-                className="flex items-center justify-between pb-3 last:pb-0 border-b last:border-b-0"
-              >
-                <div>
-                  <p className="font-semibold">{booking.serviceName}</p>
-                  <p className="text-sm text-muted-foreground">{booking.date}</p>
-                </div>
-                <span
-                  className={`text-sm font-medium ${
-                    booking.status === "completed"
-                      ? "text-primary"
-                      : "text-blue-600"
-                  }`}
+            {bookings.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">No bookings yet</p>
+            ) : (
+              bookings.map((booking) => (
+                <div
+                  key={booking.id}
+                  className="flex items-center justify-between pb-3 last:pb-0 border-b last:border-b-0"
                 >
-                  {booking.status === "completed" ? "Completed" : "Upcoming"}
-                </span>
-              </div>
-            ))}
+                  <div>
+                    <p className="font-semibold">{booking.services?.title || "Service"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(booking.start_time).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric"
+                      })}
+                    </p>
+                  </div>
+                  <span
+                    className={`text-sm font-medium ${
+                      booking.status === "completed"
+                        ? "text-primary"
+                        : booking.status === "confirmed"
+                        ? "text-blue-600"
+                        : "text-orange-600"
+                    }`}
+                  >
+                    {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                  </span>
+                </div>
+              ))
+            )}
             <Button
               variant="ghost"
               className="w-full justify-center text-primary"
+              onClick={() => navigate("/bookings")}
             >
               View All
               <ArrowRight className="w-4 h-4 ml-2" />

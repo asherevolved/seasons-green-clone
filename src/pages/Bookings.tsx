@@ -1,12 +1,56 @@
-import { Calendar, Clock, MapPin, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Clock, MapPin, ChevronRight, Loader2 } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { bookings } from "@/lib/data";
+import { supabase } from "@/integrations/supabase/client";
 
 const Bookings = () => {
-  const upcomingBookings = bookings.filter((b) => b.status === "upcoming");
+  const navigate = useNavigate();
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const fetchBookings = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    const { data } = await supabase
+      .from("bookings")
+      .select(`
+        *,
+        services (
+          title,
+          category
+        )
+      `)
+      .eq("user_id", user.id)
+      .order("start_time", { ascending: false });
+    
+    setBookings(data || []);
+    setIsLoading(false);
+  };
+
+  const upcomingBookings = bookings.filter(
+    (b) => b.status === "pending" || b.status === "confirmed"
+  );
   const pastBookings = bookings.filter((b) => b.status === "completed");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
@@ -36,16 +80,25 @@ const Bookings = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-lg mb-1">
-                        {booking.serviceName}
+                        {booking.services?.title || "Service"}
                       </h3>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Clock className="w-4 h-4" />
-                          <span>{booking.date} • 10:30 AM</span>
+                          <span>
+                            {new Date(booking.start_time).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric"
+                            })} • {new Date(booking.start_time).toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "2-digit"
+                            })}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <MapPin className="w-4 h-4" />
-                          <span>10 Sector 55, Gurugram</span>
+                          <span>Your saved address</span>
                         </div>
                       </div>
                       <div className="flex gap-2 mt-3">
@@ -81,11 +134,17 @@ const Bookings = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-lg mb-1">
-                      {booking.serviceName}
+                      {booking.services?.title || "Service"}
                     </h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                       <Clock className="w-4 h-4" />
-                      <span>{booking.date}</span>
+                      <span>
+                        {new Date(booking.start_time).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric"
+                        })}
+                      </span>
                     </div>
                     <span className="inline-flex items-center text-xs font-medium text-primary bg-secondary px-2 py-1 rounded-full">
                       Completed

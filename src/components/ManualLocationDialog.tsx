@@ -14,6 +14,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+const addressSchema = z.object({
+  houseNumber: z.string().trim().min(1, "House number is required").max(50, "House number too long"),
+  street: z.string().trim().min(1, "Street is required").max(100, "Street name too long"),
+  area: z.string().trim().min(1, "Area is required").max(100, "Area name too long"),
+  city: z.string().trim().min(1, "City is required").max(50, "City name too long"),
+  pincode: z.string().trim().regex(/^\d{6}$/, "Pincode must be 6 digits"),
+  label: z.string().trim().max(50, "Label too long").optional(),
+});
 
 interface ManualLocationDialogProps {
   open: boolean;
@@ -46,13 +56,25 @@ export const ManualLocationDialog = ({
   };
 
   const handleSave = async () => {
-    if (!houseNumber || !street || !area || !city || !pincode) {
-      toast.error("Please fill in all fields");
+    // Validate inputs
+    const validation = addressSchema.safeParse({
+      houseNumber,
+      street,
+      area,
+      city,
+      pincode,
+      label,
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
-    const fullAddress = `${houseNumber}, ${street}`;
-    const fullArea = `${area}, ${city} - ${pincode}`;
+    const validData = validation.data;
+    const fullAddress = `${validData.houseNumber}, ${validData.street}`;
+    const fullArea = `${validData.area}, ${validData.city} - ${validData.pincode}`;
 
     setLocation({
       address: fullAddress,
@@ -66,12 +88,12 @@ export const ManualLocationDialog = ({
         .from("addresses")
         .insert({
           user_id: user.id,
-          house_number: houseNumber,
-          street: street,
-          area: area,
-          city: city,
-          pincode: pincode,
-          label: label || `${houseNumber}, ${street}`,
+          house_number: validData.houseNumber,
+          street: validData.street,
+          area: validData.area,
+          city: validData.city,
+          pincode: validData.pincode,
+          label: validData.label || fullAddress,
           address_line: fullAddress,
           lat: 0, // Will be geocoded later if needed
           lng: 0,
@@ -80,11 +102,11 @@ export const ManualLocationDialog = ({
 
       if (error) {
         toast.error("Failed to save address");
-        console.error(error);
-      } else {
-        toast.success("Address saved successfully!");
-        onSaved?.();
+        return;
       }
+      
+      toast.success("Address saved successfully!");
+      onSaved?.();
     } else {
       toast.success("Location updated successfully!");
     }

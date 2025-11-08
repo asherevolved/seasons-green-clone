@@ -33,6 +33,13 @@ const Profile = () => {
 
   useEffect(() => {
     checkUser();
+
+    // Listen for auth state changes to refresh data
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkUser();
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const checkUser = async () => {

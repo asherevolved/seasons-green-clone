@@ -101,7 +101,7 @@ const Services = () => {
                 </p>
                 <div className="flex items-center justify-between mt-auto">
                   <span className="text-base font-medium">
-                    Starting at ${service.price}
+                    Starting at ₹{service.price}
                   </span>
                   <Button
                     className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl hover:scale-105 active:scale-95 transition-all duration-200"

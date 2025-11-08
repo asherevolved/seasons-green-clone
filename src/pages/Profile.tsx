@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   User,
   ChevronRight,
@@ -11,6 +13,7 @@ import {
   Lock,
   ArrowRight,
   LogOut,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,8 +21,54 @@ import { Switch } from "@/components/ui/switch";
 import { BottomNav } from "@/components/BottomNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { bookings, addresses } from "@/lib/data";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    setUser(user);
+    
+    // Fetch profile
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+    
+    setProfile(profileData);
+    setIsLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out successfully");
+    navigate("/auth");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <header className="bg-card border-b border-border px-4 md:px-6 py-6">
@@ -36,12 +85,12 @@ const Profile = () => {
           <Card className="p-6 hover:shadow-md transition-all duration-300">
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20">
-              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarImage src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`} />
+              <AvatarFallback>{profile?.full_name?.charAt(0) || "U"}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h2 className="text-xl font-bold">John Doe</h2>
-              <p className="text-muted-foreground">john.doe@email.com</p>
+              <h2 className="text-xl font-bold">{profile?.full_name || "User"}</h2>
+              <p className="text-muted-foreground">{user?.phone || user?.email || "No contact info"}</p>
             </div>
           </div>
         </Card>
@@ -181,6 +230,7 @@ const Profile = () => {
         <Button
           variant="outline"
           className="w-full h-12 text-destructive border-destructive/20 bg-destructive/5"
+          onClick={handleLogout}
         >
           <LogOut className="w-5 h-5 mr-2" />
           Log Out

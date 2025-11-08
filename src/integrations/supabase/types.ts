@@ -247,6 +247,7 @@ export type Database = {
     }
     Functions: {
       ensure_profile_for_user: { Args: never; Returns: undefined }
+      is_admin: { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {
       booking_status: "pending" | "confirmed" | "cancelled" | "completed"

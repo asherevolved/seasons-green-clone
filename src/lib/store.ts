@@ -95,42 +95,68 @@ export const useStore = create<StoreState>((set, get) => ({
         const { latitude, longitude } = position.coords;
         
         try {
-          // Use Nominatim for reverse geocoding
+          // Use Nominatim for reverse geocoding with high zoom for detailed address
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=20&addressdetails=1`
           );
           const data = await response.json();
           
-          const address = data.address;
-          const displayAddress = 
-            address.house_number && address.road
-              ? `${address.house_number} ${address.road}`
-              : address.road || address.suburb || "Your Location";
+          const addr = data.address;
           
-          const area = [
-            address.suburb,
-            address.city || address.town || address.village,
-            address.state,
-          ]
+          // Try to build the most complete address possible
+          const houseNumber = addr.house_number || addr.building || '';
+          const road = addr.road || addr.street || '';
+          const suburb = addr.suburb || addr.neighbourhood || addr.quarter || '';
+          const city = addr.city || addr.town || addr.village || addr.municipality || '';
+          const state = addr.state || '';
+          const postcode = addr.postcode || '';
+          
+          // Build primary address line
+          let displayAddress = '';
+          if (houseNumber && road) {
+            displayAddress = `${houseNumber}, ${road}`;
+          } else if (road) {
+            displayAddress = road;
+          } else if (suburb) {
+            displayAddress = suburb;
+          } else {
+            displayAddress = "Your Location";
+          }
+          
+          // Build area line
+          const areaComponents = [suburb, city, state, postcode]
             .filter(Boolean)
-            .join(", ");
+            .filter((item, index, arr) => arr.indexOf(item) === index); // Remove duplicates
+          const area = areaComponents.join(", ") || "Location found";
 
           set({
             location: {
               address: displayAddress,
-              area: area || "Location found",
+              area: area,
               coordinates: { lat: latitude, lng: longitude },
               isLoading: false,
             },
           });
+          
+          // Show message if house number wasn't detected
+          if (!houseNumber) {
+            // Import toast dynamically to avoid circular dependencies
+            import('sonner').then(({ toast }) => {
+              toast.info("House number not detected. You can add it manually from the location menu.");
+            });
+          }
         } catch (error) {
           set({
             location: {
               address: "Location found",
-              area: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+              area: `Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
               coordinates: { lat: latitude, lng: longitude },
               isLoading: false,
             },
+          });
+          
+          import('sonner').then(({ toast }) => {
+            toast.warning("Couldn't fetch detailed address. Please add manually.");
           });
         }
       },
@@ -143,10 +169,14 @@ export const useStore = create<StoreState>((set, get) => ({
             isLoading: false,
           },
         });
+        
+        import('sonner').then(({ toast }) => {
+          toast.error("Location access denied. Please enable location services.");
+        });
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 15000,
         maximumAge: 0,
       }
     );

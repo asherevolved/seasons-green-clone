@@ -1,7 +1,6 @@
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BottomNav } from "@/components/BottomNav";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { services } from "@/lib/data";
 import { useState } from "react";
@@ -107,8 +106,6 @@ const Services = () => {
           ))}
         </div>
       </main>
-
-      <BottomNav />
     </div>
   );
 };

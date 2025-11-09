@@ -1,6 +1,5 @@
 import { Search, Sprout, TreeDeciduous, Scissors, Droplet } from "lucide-react";
 import { LocationHeader } from "@/components/LocationHeader";
-import { BottomNav } from "@/components/BottomNav";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
@@ -110,8 +109,6 @@ const Index = () => {
           </div>
         </section>
       </main>
-
-      <BottomNav />
     </div>
   );
 };

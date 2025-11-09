@@ -134,12 +134,12 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <header className="bg-card border-b border-border px-4 md:px-6 py-6">
-        <div className="max-w-7xl mx-auto flex items-center gap-3 justify-center md:justify-start">
+        <div className="max-w-7xl mx-auto relative flex items-center justify-center">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="hidden md:flex md:absolute"
+            className="hidden md:flex absolute left-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>

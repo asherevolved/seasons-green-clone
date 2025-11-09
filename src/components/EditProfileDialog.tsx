@@ -40,7 +40,9 @@ export const EditProfileDialog = ({
       setFullName(profile.full_name || "");
       setAvatarUrl(profile.avatar_url || "");
       setEmail(profile.email || user?.email || "");
-      setPhone(profile.phone || user?.phone || "");
+      // Remove +91 prefix if exists for display
+      const phoneValue = profile.phone || user?.phone || "";
+      setPhone(phoneValue.startsWith("+91") ? phoneValue.slice(3) : phoneValue);
     }
   }, [profile, user]);
 
@@ -50,13 +52,14 @@ export const EditProfileDialog = ({
 
     try {
       // Update profile in profiles table
+      const phoneWithPrefix = phone.trim() ? `+91${phone.trim()}` : null;
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
           full_name: fullName.trim() || null,
           avatar_url: avatarUrl.trim() || null,
           email: email.trim() || null,
-          phone: phone.trim() || null,
+          phone: phoneWithPrefix,
         })
         .eq("id", user?.id);
 
@@ -108,13 +111,25 @@ export const EditProfileDialog = ({
 
             <div className="grid gap-2">
               <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+1234567890"
-              />
+              <div className="flex items-center">
+                <span className="inline-flex items-center px-3 h-10 rounded-l-md border border-r-0 border-input bg-muted text-sm text-muted-foreground">
+                  +91
+                </span>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    if (value.length <= 10) {
+                      setPhone(value);
+                    }
+                  }}
+                  placeholder="9876543210"
+                  className="rounded-l-none"
+                  maxLength={10}
+                />
+              </div>
             </div>
 
             <div className="grid gap-2">

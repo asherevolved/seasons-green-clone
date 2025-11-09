@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, ChevronRight, Loader2 } from "lucide-react";
+import { Calendar, Clock, MapPin, ChevronRight, Loader2, ArrowLeft } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,15 @@ const Bookings = () => {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <header className="bg-card border-b border-border px-4 md:px-6 py-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="hidden md:flex"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
           <h1 className="text-2xl font-bold">My Bookings</h1>
         </div>
       </header>

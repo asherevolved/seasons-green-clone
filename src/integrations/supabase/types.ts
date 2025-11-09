@@ -20,12 +20,14 @@ export type Database = {
           area: string | null
           city: string | null
           created_at: string
+          full_name: string | null
           house_number: string | null
           id: string
           is_default: boolean | null
           label: string | null
           lat: number
           lng: number
+          phone: string | null
           pincode: string | null
           street: string | null
           user_id: string
@@ -35,12 +37,14 @@ export type Database = {
           area?: string | null
           city?: string | null
           created_at?: string
+          full_name?: string | null
           house_number?: string | null
           id?: string
           is_default?: boolean | null
           label?: string | null
           lat: number
           lng: number
+          phone?: string | null
           pincode?: string | null
           street?: string | null
           user_id: string
@@ -50,12 +54,14 @@ export type Database = {
           area?: string | null
           city?: string | null
           created_at?: string
+          full_name?: string | null
           house_number?: string | null
           id?: string
           is_default?: boolean | null
           label?: string | null
           lat?: number
           lng?: number
+          phone?: string | null
           pincode?: string | null
           street?: string | null
           user_id?: string

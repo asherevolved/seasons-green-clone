@@ -17,6 +17,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const addressSchema = z.object({
+  fullName: z.string().trim().min(1, "Full name is required").max(100, "Name too long"),
+  phone: z.string().trim().regex(/^[6-9]\d{9}$/, "Phone must be a valid 10-digit number"),
   houseNumber: z.string().trim().min(1, "House number is required").max(50, "House number too long"),
   street: z.string().trim().min(1, "Street is required").max(100, "Street name too long"),
   area: z.string().trim().min(1, "Area is required").max(100, "Area name too long"),
@@ -37,6 +39,8 @@ export const ManualLocationDialog = ({
   onSaved,
 }: ManualLocationDialogProps) => {
   const setLocation = useStore((state) => state.setLocation);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [houseNumber, setHouseNumber] = useState("");
   const [street, setStreet] = useState("");
   const [area, setArea] = useState("");
@@ -58,6 +62,8 @@ export const ManualLocationDialog = ({
   const handleSave = async () => {
     // Validate inputs
     const validation = addressSchema.safeParse({
+      fullName,
+      phone,
       houseNumber,
       street,
       area,
@@ -88,6 +94,8 @@ export const ManualLocationDialog = ({
         .from("addresses")
         .insert({
           user_id: user.id,
+          full_name: validData.fullName,
+          phone: validData.phone,
           house_number: validData.houseNumber,
           street: validData.street,
           area: validData.area,
@@ -114,6 +122,8 @@ export const ManualLocationDialog = ({
     onOpenChange(false);
     
     // Clear form
+    setFullName("");
+    setPhone("");
     setHouseNumber("");
     setStreet("");
     setArea("");
@@ -130,6 +140,25 @@ export const ManualLocationDialog = ({
           <DialogTitle>Enter Your Location</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input
+              id="fullName"
+              placeholder="e.g., Rajesh Kumar"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              placeholder="e.g., 9876543210"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              maxLength={10}
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="houseNumber">House/Flat Number</Label>
             <Input

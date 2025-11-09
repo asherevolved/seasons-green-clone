@@ -15,6 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const addressSchema = z.object({
+  fullName: z.string().trim().min(1, "Full name is required").max(100, "Name too long"),
+  phone: z.string().trim().regex(/^[6-9]\d{9}$/, "Phone must be a valid 10-digit number"),
   houseNumber: z.string().trim().min(1, "House number is required").max(50, "House number too long"),
   street: z.string().trim().min(1, "Street is required").max(100, "Street name too long"),
   area: z.string().trim().min(1, "Area is required").max(100, "Area name too long"),
@@ -36,6 +38,8 @@ export const EditAddressDialog = ({
   address,
   onSaved,
 }: EditAddressDialogProps) => {
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [houseNumber, setHouseNumber] = useState("");
   const [street, setStreet] = useState("");
   const [area, setArea] = useState("");
@@ -46,6 +50,8 @@ export const EditAddressDialog = ({
 
   useEffect(() => {
     if (address && open) {
+      setFullName(address.full_name || "");
+      setPhone(address.phone || "");
       setHouseNumber(address.house_number || "");
       setStreet(address.street || "");
       setArea(address.area || "");
@@ -59,6 +65,8 @@ export const EditAddressDialog = ({
   const handleSave = async () => {
     // Validate inputs
     const validation = addressSchema.safeParse({
+      fullName,
+      phone,
       houseNumber,
       street,
       area,
@@ -79,6 +87,8 @@ export const EditAddressDialog = ({
     const { error } = await supabase
       .from("addresses")
       .update({
+        full_name: validData.fullName,
+        phone: validData.phone,
         house_number: validData.houseNumber,
         street: validData.street,
         area: validData.area,
@@ -107,6 +117,25 @@ export const EditAddressDialog = ({
           <DialogTitle>Edit Address</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input
+              id="fullName"
+              placeholder="e.g., Rajesh Kumar"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              placeholder="e.g., 9876543210"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              maxLength={10}
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="houseNumber">House/Flat Number</Label>
             <Input

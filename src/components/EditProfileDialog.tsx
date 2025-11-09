@@ -31,14 +31,12 @@ export const EditProfileDialog = ({
 }: EditProfileDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fullName, setFullName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name || "");
-      setAvatarUrl(profile.avatar_url || "");
       setEmail(profile.email || user?.email || "");
       // Remove +91 prefix if exists for display
       const phoneValue = profile.phone || user?.phone || "";
@@ -57,7 +55,6 @@ export const EditProfileDialog = ({
         .from("profiles")
         .update({
           full_name: fullName.trim() || null,
-          avatar_url: avatarUrl.trim() || null,
           email: email.trim() || null,
           phone: phoneWithPrefix,
         })
@@ -144,17 +141,6 @@ export const EditProfileDialog = ({
               <p className="text-xs text-muted-foreground">
                 Changing your email will require verification
               </p>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="avatarUrl">Avatar URL</Label>
-              <Input
-                id="avatarUrl"
-                type="url"
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-                placeholder="https://example.com/avatar.jpg"
-              />
             </div>
           </div>
           <DialogFooter>

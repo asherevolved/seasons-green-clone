@@ -158,7 +158,7 @@ const Profile = () => {
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20 shrink-0">
               <AvatarImage src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`} />
-              <AvatarFallback>{profile?.full_name?.charAt(0) || "U"}</AvatarFallback>
+              <AvatarFallback>{profile?.full_name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <h2 className="text-xl font-bold truncate">{profile?.full_name || "User"}</h2>

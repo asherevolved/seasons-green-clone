@@ -10,6 +10,7 @@ import {
   Mail,
   Lock,
   ArrowRight,
+  ArrowLeft,
   LogOut,
   Loader2,
   Trash2,
@@ -133,8 +134,16 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <header className="bg-card border-b border-border px-4 md:px-6 py-6">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-center">My Profile</h1>
+        <div className="max-w-7xl mx-auto flex items-center gap-3 justify-center md:justify-start">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="hidden md:flex md:absolute"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">My Profile</h1>
         </div>
       </header>
 

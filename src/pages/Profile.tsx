@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { EditAddressDialog } from "@/components/EditAddressDialog";
+import { EditProfileDialog } from "@/components/EditProfileDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,6 +44,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [editingAddress, setEditingAddress] = useState<any>(null);
   const [deletingAddressId, setDeletingAddressId] = useState<string | null>(null);
+  const [editingProfile, setEditingProfile] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -179,7 +181,10 @@ const Profile = () => {
         <section>
           <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
           <Card className="p-4 hover:shadow-md transition-all duration-300">
-            <button className="flex items-center gap-3 w-full text-left hover:bg-accent rounded-lg p-2 -m-2 transition-colors">
+            <button 
+              onClick={() => setEditingProfile(true)}
+              className="flex items-center gap-3 w-full text-left hover:bg-accent rounded-lg p-2 -m-2 transition-colors"
+            >
               <User className="w-5 h-5" />
               <span className="flex-1">Edit Profile</span>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -336,6 +341,17 @@ const Profile = () => {
 
       <BottomNav />
       
+      <EditProfileDialog
+        open={editingProfile}
+        onOpenChange={setEditingProfile}
+        profile={profile}
+        user={user}
+        onSaved={() => {
+          setEditingProfile(false);
+          checkUser(); // Refresh data
+        }}
+      />
+
       <EditAddressDialog
         open={!!editingAddress}
         onOpenChange={(open) => !open && setEditingAddress(null)}

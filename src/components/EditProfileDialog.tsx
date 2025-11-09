@@ -1,0 +1,163 @@
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
+interface EditProfileDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  profile: any;
+  user: any;
+  onSaved: () => void;
+}
+
+export const EditProfileDialog = ({
+  open,
+  onOpenChange,
+  profile,
+  user,
+  onSaved,
+}: EditProfileDialogProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  useEffect(() => {
+    if (profile) {
+      setFullName(profile.full_name || "");
+      setAvatarUrl(profile.avatar_url || "");
+      setEmail(profile.email || user?.email || "");
+      setPhone(profile.phone || user?.phone || "");
+    }
+  }, [profile, user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Update profile in profiles table
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({
+          full_name: fullName.trim() || null,
+          avatar_url: avatarUrl.trim() || null,
+          email: email.trim() || null,
+          phone: phone.trim() || null,
+        })
+        .eq("id", user?.id);
+
+      if (profileError) throw profileError;
+
+      // Update email in auth if changed
+      if (email !== user?.email && email.trim()) {
+        const { error: emailError } = await supabase.auth.updateUser({
+          email: email.trim(),
+        });
+        
+        if (emailError) {
+          toast.error("Profile updated but email change failed: " + emailError.message);
+        } else {
+          toast.success("Profile updated! Please check your new email to confirm the change.");
+        }
+      } else {
+        toast.success("Profile updated successfully!");
+      }
+
+      onSaved();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogDescription>
+            Update your profile information. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your full name"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+1234567890"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+              />
+              <p className="text-xs text-muted-foreground">
+                Changing your email will require verification
+              </p>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="avatarUrl">Avatar URL</Label>
+              <Input
+                id="avatarUrl"
+                type="url"
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                placeholder="https://example.com/avatar.jpg"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

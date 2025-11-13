@@ -187,4 +187,13 @@ All colors MUST be HSL.
   .card-3d:hover {
     @apply elevation-3 -translate-y-1;
   }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

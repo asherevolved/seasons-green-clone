@@ -43,7 +43,7 @@ const Index = () => {
         {/* Categories */}
         <section className="animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 md:mb-6">Categories</h2>
-          <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
+          <div className="flex gap-6 md:gap-8 overflow-x-auto pb-2 scrollbar-hide">
             <CategoryIcon
               image={lawnMowingIcon}
               label="Lawn Mowing"

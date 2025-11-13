@@ -22,7 +22,9 @@ export const DesktopNav = () => {
           {({ isActive }) => (
           <Button
             variant={isActive ? "secondary" : "ghost"}
-            className="gap-2 hover:scale-105 active:scale-95 transition-all duration-200"
+            className={`gap-2 hover:scale-105 active:scale-95 transition-all duration-200 rounded-2xl font-display font-semibold ${
+              isActive ? 'shadow-3d' : ''
+            }`}
           >
               <item.icon className="w-4 h-4" />
               <span>{item.label}</span>
@@ -34,12 +36,14 @@ export const DesktopNav = () => {
         {({ isActive }) => (
           <Button
             variant={isActive ? "secondary" : "ghost"}
-            className="gap-2 relative hover:scale-105 active:scale-95 transition-all duration-200"
+            className={`gap-2 relative hover:scale-105 active:scale-95 transition-all duration-200 rounded-2xl font-display font-semibold ${
+              isActive ? 'shadow-3d' : ''
+            }`}
           >
             <ShoppingCart className="w-4 h-4" />
             <span>Cart</span>
             {cartCount > 0 && (
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary animate-pulse">
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs gradient-accent text-accent-foreground animate-pulse border-0">
                 {cartCount}
               </Badge>
             )}

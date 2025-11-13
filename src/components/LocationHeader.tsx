@@ -84,22 +84,24 @@ export const LocationHeader = () => {
   };
 
   return (
-    <header className="sticky top-0 bg-card border-b border-border z-40 px-4 md:px-6 py-3 animate-fade-in">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+    <header className="sticky top-0 bg-background/80 backdrop-blur-xl border-b border-border/50 z-40 px-4 md:px-6 py-4 shadow-sm">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+            <button className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-all group">
               {location.isLoading ? (
-                <Loader2 className="w-5 h-5 text-primary animate-spin shrink-0" />
+                <Loader2 className="w-6 h-6 text-primary animate-spin shrink-0" />
               ) : (
-                <MapPin className="w-5 h-5 text-primary shrink-0" />
+                <div className="p-2 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <MapPin className="w-5 h-5 text-primary shrink-0" />
+                </div>
               )}
               <div className="flex flex-col min-w-0 flex-1 text-left">
-                <div className="flex items-center gap-1">
-                  <h2 className="text-base font-semibold truncate">{location.address}</h2>
-                  <ChevronDown className="w-4 h-4 shrink-0" />
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-sm font-display font-bold truncate">{location.address}</h2>
+                  <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground" />
                 </div>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-xs text-muted-foreground truncate font-medium">
                   {location.area}
                 </p>
               </div>
@@ -155,9 +157,10 @@ export const LocationHeader = () => {
         <div className="flex items-center gap-2 shrink-0">
           <DesktopNav />
           <Button
+            variant="ghost"
             size="icon"
-            className="md:hidden rounded-full bg-primary hover:bg-primary/90 hover:scale-110 active:scale-95 transition-transform duration-200"
             onClick={() => navigate("/profile")}
+            className="md:hidden rounded-full hover:bg-primary/10"
           >
             <User className="w-5 h-5" />
           </Button>

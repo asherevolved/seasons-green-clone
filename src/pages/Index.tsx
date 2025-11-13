@@ -42,7 +42,7 @@ const Index = () => {
 
         {/* Categories */}
         <section className="animate-fade-in">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Categories</h2>
+          <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 md:mb-6">Categories</h2>
           <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
             <CategoryIcon
               image={lawnMowingIcon}
@@ -97,10 +97,10 @@ const Index = () => {
         {/* Most Popular */}
         <section className="animate-fade-in">
           <div className="flex items-center justify-between mb-4 md:mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">Most Popular</h2>
+            <h2 className="text-2xl md:text-3xl font-display font-bold">Most Popular</h2>
             <Button
               variant="ghost"
-              className="text-primary hover:text-primary/80 hover:scale-105 transition-all duration-200"
+              className="text-primary hover:text-primary/80 hover:scale-105 transition-all duration-200 font-display font-semibold"
               onClick={() => navigate("/services")}
             >
               See all

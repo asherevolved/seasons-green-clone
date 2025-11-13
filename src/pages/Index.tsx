@@ -1,4 +1,4 @@
-import { Search, Sprout, TreeDeciduous, Scissors, Droplet } from "lucide-react";
+import { Search } from "lucide-react";
 import { LocationHeader } from "@/components/LocationHeader";
 import { BottomNav } from "@/components/BottomNav";
 import { CategoryIcon } from "@/components/CategoryIcon";
@@ -9,6 +9,10 @@ import { useStore } from "@/lib/store";
 import { services } from "@/lib/data";
 import { useNavigate } from "react-router-dom";
 import gardeningToolsImg from "@/assets/gardening-tools.jpg";
+import lawnMowingIcon from "@/assets/icons/lawn-mowing-3d.png";
+import gardenDesignIcon from "@/assets/icons/garden-design-3d.png";
+import treeTrimmingIcon from "@/assets/icons/tree-trimming-3d.png";
+import irrigationIcon from "@/assets/icons/irrigation-3d.png";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -41,22 +45,22 @@ const Index = () => {
           <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Categories</h2>
           <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
             <CategoryIcon
-              icon={Sprout}
+              image={lawnMowingIcon}
               label="Lawn Mowing"
               onClick={() => navigate("/services?category=lawn-care")}
             />
             <CategoryIcon
-              icon={TreeDeciduous}
+              image={gardenDesignIcon}
               label="Garden Design"
               onClick={() => navigate("/services?category=garden-maintenance")}
             />
             <CategoryIcon
-              icon={Scissors}
+              image={treeTrimmingIcon}
               label="Tree Trimming"
               onClick={() => navigate("/services?category=tree-trimming")}
             />
             <CategoryIcon
-              icon={Droplet}
+              image={irrigationIcon}
               label="Irrigation"
               onClick={() => navigate("/services")}
             />

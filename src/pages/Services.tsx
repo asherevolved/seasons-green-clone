@@ -60,23 +60,23 @@ const Services = () => {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6 md:space-y-8">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
             placeholder="Search for services"
-            className="pl-10 h-12 bg-card"
+            className="pl-12 h-14 bg-card rounded-2xl shadow-3d border-0 text-base focus-visible:shadow-3d-lg transition-all"
           />
         </div>
 
         {/* Category Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {categories.map((cat) => (
             <Button
               key={cat.id}
               variant={activeCategory === cat.id ? "default" : "outline"}
               className={
                 activeCategory === cat.id
-                  ? "bg-primary text-primary-foreground rounded-full shrink-0"
-                  : "rounded-full shrink-0"
+                  ? "gradient-primary text-primary-foreground rounded-2xl shrink-0 shadow-3d border-0 h-11 px-6 font-semibold"
+                  : "rounded-2xl shrink-0 bg-card shadow-3d hover:shadow-3d-lg border-border/50 h-11 px-6 font-semibold"
               }
               onClick={() => setActiveCategory(cat.id)}
             >
@@ -88,26 +88,30 @@ const Services = () => {
         {/* Service Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredServices.map((service, index) => (
-            <Card key={service.id} className="overflow-hidden flex flex-col hover-scale transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-              <img
-                src={getServiceImage(index)}
-                alt={service.title}
-                className="w-full h-48 md:h-56 object-cover"
-              />
-              <div className="p-4 flex-1 flex flex-col">
-                <h3 className="text-lg font-semibold mb-2">{service.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3 flex-1">
+            <Card key={service.id} className="overflow-hidden flex flex-col card-3d animate-fade-in group" style={{ animationDelay: `${index * 100}ms` }}>
+              <div className="relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
+                <img
+                  src={getServiceImage(index)}
+                  alt={service.title}
+                  className="w-full h-48 md:h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-5 flex-1 flex flex-col">
+                <h3 className="text-lg font-bold mb-2">{service.title}</h3>
+                <p className="text-sm text-muted-foreground mb-4 flex-1">
                   {service.description}
                 </p>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="text-base font-medium">
-                    Starting at ₹{service.price}
-                  </span>
+                <div className="flex items-center justify-between mt-auto gap-3">
+                  <div>
+                    <span className="text-xs text-muted-foreground block">Starting at</span>
+                    <span className="text-xl font-bold text-primary">₹{service.price}</span>
+                  </div>
                   <Button
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl hover:scale-105 active:scale-95 transition-all duration-200"
+                    className="gradient-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all duration-300 shadow-3d hover:shadow-3d-lg rounded-xl border-0 px-6"
                     onClick={() => handleBook(service)}
                   >
-                    Book Service
+                    Book Now
                   </Button>
                 </div>
               </div>

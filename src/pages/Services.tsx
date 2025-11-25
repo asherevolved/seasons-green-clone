@@ -1,4 +1,4 @@
-import { Search, ArrowLeft, Heart } from "lucide-react";
+import { Search, ArrowLeft, Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/BottomNav";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -13,10 +13,10 @@ import flowersWideImg from "@/assets/flowers-wide.jpg";
 import gardenMaintenanceImg from "@/assets/garden-maintenance.jpg";
 import lawnMowingImg from "@/assets/lawn-mowing.jpg";
 import hedgeTrimmingImg from "@/assets/hedge-trimming.jpg";
-import allServicesIcon from "@/assets/categories/all-services.png";
-import lawnCareIcon from "@/assets/categories/lawn-care.png";
-import gardenMaintenanceIcon from "@/assets/categories/garden-maintenance.png";
-import treeShrubIcon from "@/assets/categories/tree-shrub.png";
+import allServicesIcon from "@/assets/categories/all-services-3d.png";
+import lawnCareIcon from "@/assets/categories/lawn-care-3d.png";
+import gardenMaintenanceIcon from "@/assets/categories/garden-maintenance-3d.png";
+import treeShrubIcon from "@/assets/categories/tree-shrub-3d.png";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -39,10 +39,21 @@ const Services = () => {
     ? services 
     : services.filter((s) => s.category === activeCategory);
 
-  const handleBook = (service: any) => {
+  const handleAddToCart = (service: any, event: React.MouseEvent) => {
+    event.stopPropagation();
     addToCart(service);
-    toast.success(`${service.title} added to cart`);
-    navigate("/cart");
+    toast.success(
+      <div className="flex items-center gap-2">
+        <ShoppingCart className="w-4 h-4" />
+        <span>{service.title} added to cart</span>
+      </div>,
+      {
+        action: {
+          label: "View Cart",
+          onClick: () => navigate("/cart"),
+        },
+      }
+    );
   };
 
   const toggleFavorite = (serviceId: string) => {
@@ -97,22 +108,22 @@ const Services = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`w-full flex flex-col items-center gap-2 px-2 py-3 rounded-2xl transition-all duration-200 ${
+                className={`w-full flex flex-col items-center gap-2 px-2 py-3 rounded-2xl transition-all duration-300 group ${
                   activeCategory === cat.id
                     ? "bg-primary/10"
                     : "hover:bg-muted/50"
                 }`}
               >
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden ${
-                  activeCategory === cat.id ? "bg-primary/5" : "bg-muted/30"
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden transition-all duration-300 ${
+                  activeCategory === cat.id ? "bg-primary/5 scale-105" : "bg-muted/30 group-hover:scale-110"
                 }`}>
                   <img 
                     src={cat.icon} 
                     alt={cat.label}
-                    className="w-14 h-14 object-contain"
+                    className="w-14 h-14 object-contain transition-transform duration-300 group-hover:rotate-6 group-hover:animate-pulse-scale"
                   />
                 </div>
-                <span className={`text-xs text-center font-medium leading-tight ${
+                <span className={`text-xs text-center font-medium leading-tight transition-colors ${
                   activeCategory === cat.id ? "text-primary font-semibold" : "text-foreground"
                 }`}>
                   {cat.label}
@@ -130,22 +141,22 @@ const Services = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl shrink-0 transition-all ${
+                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl shrink-0 transition-all duration-300 group ${
                   activeCategory === cat.id
                     ? "bg-primary/10"
                     : "bg-card border border-border/50"
                 }`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden ${
-                  activeCategory === cat.id ? "bg-primary/5" : "bg-muted/30"
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden transition-all duration-300 ${
+                  activeCategory === cat.id ? "bg-primary/5 scale-105" : "bg-muted/30 group-active:scale-95"
                 }`}>
                   <img 
                     src={cat.icon} 
                     alt={cat.label}
-                    className="w-10 h-10 object-contain"
+                    className="w-10 h-10 object-contain transition-transform duration-300 group-active:rotate-6 group-active:animate-pulse-scale"
                   />
                 </div>
-                <span className={`text-xs font-medium ${
+                <span className={`text-xs font-medium transition-colors ${
                   activeCategory === cat.id ? "text-primary font-semibold" : "text-foreground"
                 }`}>
                   {cat.label}
@@ -205,8 +216,8 @@ const Services = () => {
                   <div className="flex justify-end mb-2">
                     <Button
                       variant="outline"
-                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 md:px-8 font-bold"
-                      onClick={() => handleBook(service)}
+                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 md:px-8 font-bold transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg"
+                      onClick={(e) => handleAddToCart(service, e)}
                     >
                       ADD
                     </Button>

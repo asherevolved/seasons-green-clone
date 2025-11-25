@@ -13,6 +13,10 @@ import flowersWideImg from "@/assets/flowers-wide.jpg";
 import gardenMaintenanceImg from "@/assets/garden-maintenance.jpg";
 import lawnMowingImg from "@/assets/lawn-mowing.jpg";
 import hedgeTrimmingImg from "@/assets/hedge-trimming.jpg";
+import allServicesIcon from "@/assets/categories/all-services.png";
+import lawnCareIcon from "@/assets/categories/lawn-care.png";
+import gardenMaintenanceIcon from "@/assets/categories/garden-maintenance.png";
+import treeShrubIcon from "@/assets/categories/tree-shrub.png";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -25,10 +29,10 @@ const Services = () => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   const categories = [
-    { id: "all", label: "All Services" },
-    { id: "lawn-care", label: "Lawn Care" },
-    { id: "garden-maintenance", label: "Garden Maintenance" },
-    { id: "tree-trimming", label: "Tree & Shrub" },
+    { id: "all", label: "All", icon: allServicesIcon },
+    { id: "lawn-care", label: "Lawn Care", icon: lawnCareIcon },
+    { id: "garden-maintenance", label: "Garden Maintenance", icon: gardenMaintenanceIcon },
+    { id: "tree-trimming", label: "Tree & Shrub", icon: treeShrubIcon },
   ];
 
   const filteredServices = activeCategory === "all" 
@@ -87,19 +91,32 @@ const Services = () => {
 
       <div className="max-w-7xl mx-auto flex">
         {/* Left Sidebar - Categories */}
-        <aside className="hidden md:block w-40 lg:w-48 border-r border-border/50 min-h-screen pt-6">
-          <div className="sticky top-24 space-y-2 px-3">
+        <aside className="hidden md:block w-32 lg:w-36 border-r border-border/50 min-h-screen pt-6 pb-6">
+          <div className="sticky top-24 space-y-3 px-2">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 ${
+                className={`w-full flex flex-col items-center gap-2 px-2 py-3 rounded-2xl transition-all duration-200 ${
                   activeCategory === cat.id
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "hover:bg-muted text-foreground"
+                    ? "bg-primary/10"
+                    : "hover:bg-muted/50"
                 }`}
               >
-                <span className="text-sm font-medium">{cat.label}</span>
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden ${
+                  activeCategory === cat.id ? "bg-primary/5" : "bg-muted/30"
+                }`}>
+                  <img 
+                    src={cat.icon} 
+                    alt={cat.label}
+                    className="w-14 h-14 object-contain"
+                  />
+                </div>
+                <span className={`text-xs text-center font-medium leading-tight ${
+                  activeCategory === cat.id ? "text-primary font-semibold" : "text-foreground"
+                }`}>
+                  {cat.label}
+                </span>
               </button>
             ))}
           </div>
@@ -113,13 +130,26 @@ const Services = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-4 py-2 rounded-full shrink-0 text-sm font-semibold transition-all ${
+                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl shrink-0 transition-all ${
                   activeCategory === cat.id
-                    ? "gradient-primary text-primary-foreground shadow-3d"
+                    ? "bg-primary/10"
                     : "bg-card border border-border/50"
                 }`}
               >
-                {cat.label}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden ${
+                  activeCategory === cat.id ? "bg-primary/5" : "bg-muted/30"
+                }`}>
+                  <img 
+                    src={cat.icon} 
+                    alt={cat.label}
+                    className="w-10 h-10 object-contain"
+                  />
+                </div>
+                <span className={`text-xs font-medium ${
+                  activeCategory === cat.id ? "text-primary font-semibold" : "text-foreground"
+                }`}>
+                  {cat.label}
+                </span>
               </button>
             ))}
           </div>

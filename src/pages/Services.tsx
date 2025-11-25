@@ -136,28 +136,28 @@ const Services = () => {
         {/* Main Content */}
         <main className="flex-1 px-4 md:px-6 py-6">
           {/* Mobile Category Tabs */}
-          <div className="md:hidden flex flex-col gap-2 pb-4 mb-6">
+          <div className="md:hidden space-y-3 pb-4 mb-6">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${
+                className={`w-full flex flex-col items-center gap-2 px-4 py-4 rounded-2xl transition-all duration-300 group ${
                   activeCategory === cat.id
-                    ? "bg-primary/10"
+                    ? "bg-primary/10 border-2 border-primary/20"
                     : "bg-card border border-border/50"
                 }`}
               >
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden transition-all duration-300 ${
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden transition-all duration-300 ${
                   activeCategory === cat.id ? "bg-primary/5 scale-105" : "bg-muted/30 group-active:scale-95"
                 }`}>
                   <img 
                     src={cat.icon} 
                     alt={cat.label}
-                    className="w-12 h-12 object-contain transition-transform duration-300 group-active:rotate-6 group-active:animate-pulse-scale"
+                    className="w-14 h-14 object-contain transition-transform duration-300 group-active:rotate-6 group-active:animate-pulse-scale"
                   />
                 </div>
-                <span className={`text-base font-medium transition-colors ${
-                  activeCategory === cat.id ? "text-primary font-semibold" : "text-foreground"
+                <span className={`text-sm font-semibold text-center transition-colors ${
+                  activeCategory === cat.id ? "text-primary" : "text-foreground"
                 }`}>
                   {cat.label}
                 </span>

@@ -1,6 +1,5 @@
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { BottomNav } from "@/components/BottomNav";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { services } from "@/lib/data";
@@ -11,6 +10,9 @@ import { toast } from "sonner";
 import lawnWideImg from "@/assets/lawn-wide.jpg";
 import hedgeWideImg from "@/assets/hedge-wide.jpg";
 import flowersWideImg from "@/assets/flowers-wide.jpg";
+import gardenMaintenanceImg from "@/assets/garden-maintenance.jpg";
+import lawnMowingImg from "@/assets/lawn-mowing.jpg";
+import hedgeTrimmingImg from "@/assets/hedge-trimming.jpg";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -20,15 +22,18 @@ const Services = () => {
     searchParams.get("category") || "lawn-care"
   );
 
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
   const categories = [
+    { id: "all", label: "All Services" },
     { id: "lawn-care", label: "Lawn Care" },
     { id: "garden-maintenance", label: "Garden Maintenance" },
     { id: "tree-trimming", label: "Tree & Shrub" },
   ];
 
-  const filteredServices = services.filter(
-    (s) => s.category === activeCategory
-  );
+  const filteredServices = activeCategory === "all" 
+    ? services 
+    : services.filter((s) => s.category === activeCategory);
 
   const handleBook = (service: any) => {
     addToCart(service);
@@ -36,89 +41,169 @@ const Services = () => {
     navigate("/cart");
   };
 
+  const toggleFavorite = (serviceId: string) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(serviceId)) {
+        newFavorites.delete(serviceId);
+      } else {
+        newFavorites.add(serviceId);
+      }
+      return newFavorites;
+    });
+  };
+
   const getServiceImage = (index: number) => {
-    const images = [lawnWideImg, hedgeWideImg, flowersWideImg];
+    const images = [lawnMowingImg, hedgeTrimmingImg, gardenMaintenanceImg, lawnWideImg, hedgeWideImg, flowersWideImg];
     return images[index % images.length];
   };
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
-    <header className="sticky top-0 bg-background/80 backdrop-blur-xl border-b border-border/50 z-40 px-4 md:px-6 py-4 shadow-sm">
-      <div className="max-w-7xl mx-auto flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/")}
-          className="hidden md:flex rounded-2xl"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="text-xl font-display font-bold">Our Services</h1>
-      </div>
-    </header>
-
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6 md:space-y-8">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            placeholder="Search for services"
-            className="pl-12 h-14 bg-card rounded-2xl shadow-3d border-0 text-base focus-visible:shadow-3d-lg transition-all"
-          />
-        </div>
-
-        {/* Category Tabs */}
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          {categories.map((cat) => (
+      {/* Header */}
+      <header className="sticky top-0 bg-background/95 backdrop-blur-xl border-b border-border/50 z-40 px-4 md:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <Button
-              key={cat.id}
-              variant={activeCategory === cat.id ? "default" : "outline"}
-              className={
-                activeCategory === cat.id
-                  ? "gradient-primary text-primary-foreground rounded-2xl shrink-0 shadow-3d border-0 h-11 px-6 font-semibold"
-                  : "rounded-2xl shrink-0 bg-card shadow-3d hover:shadow-3d-lg border-border/50 h-11 px-6 font-semibold"
-              }
-              onClick={() => setActiveCategory(cat.id)}
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/")}
+              className="rounded-full"
             >
-              {cat.label}
+              <ArrowLeft className="w-5 h-5" />
             </Button>
-          ))}
+            <h1 className="text-xl md:text-2xl font-display font-bold">Our Services</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Heart className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Search className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
+      </header>
 
-        {/* Service Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {filteredServices.map((service, index) => (
-            <Card key={service.id} className="overflow-hidden flex flex-col card-3d animate-fade-in group" style={{ animationDelay: `${index * 100}ms` }}>
-              <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
-                <img
-                  src={getServiceImage(index)}
-                  alt={service.title}
-                  className="w-full h-48 md:h-56 object-cover group-hover:scale-110 transition-transform duration-500"
-                />
+      <div className="max-w-7xl mx-auto flex">
+        {/* Left Sidebar - Categories */}
+        <aside className="hidden md:block w-40 lg:w-48 border-r border-border/50 min-h-screen pt-6">
+          <div className="sticky top-24 space-y-2 px-3">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 ${
+                  activeCategory === cat.id
+                    ? "bg-primary/10 text-primary font-semibold"
+                    : "hover:bg-muted text-foreground"
+                }`}
+              >
+                <span className="text-sm font-medium">{cat.label}</span>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 px-4 md:px-6 py-6">
+          {/* Mobile Category Tabs */}
+          <div className="md:hidden flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-4 py-2 rounded-full shrink-0 text-sm font-semibold transition-all ${
+                  activeCategory === cat.id
+                    ? "gradient-primary text-primary-foreground shadow-3d"
+                    : "bg-card border border-border/50"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Hero Banner */}
+          <Card className="mb-6 overflow-hidden gradient-primary shadow-3d">
+            <div className="relative p-8 md:p-10">
+              <div className="absolute top-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
+                UP TO 30% OFF
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <h3 className="text-lg font-bold mb-2">{service.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4 flex-1">
-                  {service.description}
-                </p>
-                <div className="flex items-center justify-between mt-auto gap-3">
-                  <div>
-                    <span className="text-xs text-muted-foreground block">Starting at</span>
-                    <span className="text-xl font-bold text-primary">₹{service.price}</span>
-                  </div>
-                  <Button
-                    className="gradient-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all duration-300 shadow-3d hover:shadow-3d-lg rounded-xl border-0 px-6"
-                    onClick={() => handleBook(service)}
-                  >
-                    Book Now
-                  </Button>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-primary-foreground mb-2">
+                Season's Best
+              </h2>
+              <p className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4">
+                Garden Services
+              </p>
+              <Button className="bg-background text-foreground hover:bg-background/90 rounded-xl px-6 font-semibold">
+                Explore now
+              </Button>
+            </div>
+          </Card>
+
+          {/* Service Cards Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {filteredServices.map((service, index) => (
+              <Card 
+                key={service.id} 
+                className="overflow-hidden flex flex-col card-3d animate-fade-in group relative"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {/* Favorite Button */}
+                <button
+                  onClick={() => toggleFavorite(service.id)}
+                  className="absolute top-3 right-3 z-10 bg-background/80 backdrop-blur-sm rounded-full p-2 hover:scale-110 transition-transform"
+                >
+                  <Heart 
+                    className={`w-4 h-4 ${favorites.has(service.id) ? 'fill-red-500 text-red-500' : 'text-foreground'}`}
+                  />
+                </button>
+
+                {/* Image */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={getServiceImage(index)}
+                    alt={service.title}
+                    className="w-full h-36 md:h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
                 </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </main>
+
+                {/* Content */}
+                <div className="p-3 md:p-4 flex-1 flex flex-col">
+                  {/* ADD Button */}
+                  <div className="flex justify-end mb-2">
+                    <Button
+                      variant="outline"
+                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 md:px-8 font-bold"
+                      onClick={() => handleBook(service)}
+                    >
+                      ADD
+                    </Button>
+                  </div>
+
+                  {/* Price */}
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg md:text-xl font-bold text-primary">₹{service.price}</span>
+                    <span className="text-sm text-muted-foreground line-through">₹{Math.round(service.price * 1.3)}</span>
+                  </div>
+
+                  {/* Discount Badge */}
+                  <div className="mb-2">
+                    <span className="text-xs font-bold text-green-600">₹{Math.round(service.price * 0.3)} OFF</span>
+                  </div>
+
+                  {/* Service Name */}
+                  <h3 className="text-sm md:text-base font-bold mb-1 line-clamp-2">{service.title}</h3>
+                  
+                  {/* Description */}
+                  <p className="text-xs text-muted-foreground">Per session</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </main>
+      </div>
 
       <BottomNav />
     </div>

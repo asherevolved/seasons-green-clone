@@ -188,44 +188,39 @@ const Services = () => {
             {filteredServices.map((service, index) => (
               <Card 
                 key={service.id} 
-                className="overflow-hidden flex flex-col card-3d animate-fade-in group relative"
+                className="overflow-hidden flex flex-col card-3d animate-fade-in group relative bg-card rounded-2xl"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                {/* Favorite Button */}
-                <button
-                  onClick={() => toggleFavorite(service.id)}
-                  className="absolute top-3 right-3 z-10 bg-background/80 backdrop-blur-sm rounded-full p-2 hover:scale-110 transition-transform"
-                >
-                  <Heart 
-                    className={`w-4 h-4 ${favorites.has(service.id) ? 'fill-red-500 text-red-500' : 'text-foreground'}`}
-                  />
-                </button>
-
-                {/* Image */}
+                {/* Image with overlays */}
                 <div className="relative overflow-hidden">
                   <img
                     src={getServiceImage(index)}
                     alt={service.title}
-                    className="w-full h-36 md:h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-44 md:h-52 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  
+                  {/* Favorite Button - Top Right */}
+                  <button
+                    onClick={() => toggleFavorite(service.id)}
+                    className="absolute top-3 right-3 z-10 bg-background/90 backdrop-blur-sm rounded-full p-2 hover:scale-110 transition-transform shadow-lg"
+                  >
+                    <Heart 
+                      className={`w-4 h-4 ${favorites.has(service.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`}
+                    />
+                  </button>
+
+                  {/* Price Badge - Bottom Left */}
+                  <div className="absolute bottom-3 left-3 z-10">
+                    <div className="bg-green-600 text-white px-3 py-1.5 rounded-lg font-bold text-base shadow-lg">
+                      ₹{service.price}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-3 md:p-4 flex-1 flex flex-col">
-                  {/* ADD Button */}
-                  <div className="flex justify-end mb-2">
-                    <Button
-                      variant="outline"
-                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 md:px-8 font-bold transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg"
-                      onClick={(e) => handleAddToCart(service, e)}
-                    >
-                      ADD
-                    </Button>
-                  </div>
-
-                  {/* Price */}
+                <div className="p-3 md:p-4 flex-1 flex flex-col relative">
+                  {/* Price Info */}
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-lg md:text-xl font-bold text-primary">₹{service.price}</span>
                     <span className="text-sm text-muted-foreground line-through">₹{Math.round(service.price * 1.3)}</span>
                   </div>
 
@@ -235,10 +230,21 @@ const Services = () => {
                   </div>
 
                   {/* Service Name */}
-                  <h3 className="text-sm md:text-base font-bold mb-1 line-clamp-2">{service.title}</h3>
+                  <h3 className="text-sm md:text-base font-semibold mb-1 line-clamp-2 text-foreground">{service.title}</h3>
                   
                   {/* Description */}
-                  <p className="text-xs text-muted-foreground">Per session</p>
+                  <p className="text-xs text-muted-foreground mb-3">Per session</p>
+
+                  {/* ADD Button - Bottom Right */}
+                  <div className="absolute bottom-3 right-3">
+                    <Button
+                      variant="outline"
+                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 md:px-8 font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
+                      onClick={(e) => handleAddToCart(service, e)}
+                    >
+                      ADD
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ))}

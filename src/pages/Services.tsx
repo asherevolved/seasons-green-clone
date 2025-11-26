@@ -102,7 +102,7 @@ const Services = () => {
 
       <div className="max-w-7xl mx-auto flex">
         {/* Left Sidebar - Categories */}
-        <aside className="hidden md:block w-32 lg:w-36 border-r border-border/50 min-h-screen pt-6 pb-6">
+        <aside className="block w-20 sm:w-24 md:w-32 lg:w-36 border-r border-border/50 min-h-screen pt-6 pb-6">
           <div className="sticky top-24 space-y-3 px-2">
             {categories.map((cat) => (
               <button
@@ -114,13 +114,13 @@ const Services = () => {
                     : "hover:bg-muted/50"
                 }`}
               >
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden transition-all duration-300 ${
+                <div className={`w-12 sm:w-14 md:w-16 h-12 sm:h-14 md:h-16 rounded-2xl flex items-center justify-center overflow-hidden transition-all duration-300 ${
                   activeCategory === cat.id ? "bg-primary/5 scale-105" : "bg-muted/30 group-hover:scale-110"
                 }`}>
                   <img 
                     src={cat.icon} 
                     alt={cat.label}
-                    className="w-14 h-14 object-contain transition-transform duration-300 group-hover:rotate-6 group-hover:animate-pulse-scale"
+                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain transition-transform duration-300 group-hover:rotate-6 group-hover:animate-pulse-scale"
                   />
                 </div>
                 <span className={`text-xs text-center font-medium leading-tight transition-colors ${
@@ -136,7 +136,7 @@ const Services = () => {
         {/* Main Content */}
         <main className="flex-1 px-4 md:px-6 py-6">
           {/* Mobile Category Tabs */}
-          <div className="md:hidden space-y-3 pb-4 mb-6">
+          <div className="hidden">
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -184,7 +184,7 @@ const Services = () => {
           </Card>
 
           {/* Service Cards Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {filteredServices.map((service, index) => (
               <Card 
                 key={service.id} 
@@ -196,7 +196,7 @@ const Services = () => {
                   <img
                     src={getServiceImage(index)}
                     alt={service.title}
-                    className="w-full h-44 md:h-52 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-40 sm:h-44 md:h-52 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   
                   {/* Favorite Button - Top Right */}
@@ -218,7 +218,7 @@ const Services = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-3 md:p-4 flex-1 flex flex-col relative">
+                <div className="p-2 sm:p-3 md:p-4 flex-1 flex flex-col relative">
                   {/* Price Info */}
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm text-muted-foreground line-through">₹{Math.round(service.price * 1.3)}</span>
@@ -236,10 +236,10 @@ const Services = () => {
                   <p className="text-xs text-muted-foreground mb-3">Per session</p>
 
                   {/* ADD Button - Bottom Right */}
-                  <div className="absolute bottom-3 right-3">
+                  <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3">
                     <Button
                       variant="outline"
-                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 md:px-8 font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
+                      className="rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-5 sm:px-6 md:px-8 font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
                       onClick={(e) => handleAddToCart(service, e)}
                     >
                       ADD
@@ -250,6 +250,19 @@ const Services = () => {
             ))}
           </div>
         </main>
+      </div>
+
+      <div className="md:hidden fixed bottom-16 left-0 right-0 px-3 z-50">
+        <div className="mx-auto max-w-2xl bg-card border border-border/50 rounded-2xl shadow-3d flex items-center justify-between p-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">₹</div>
+            <div>
+              <div className="text-sm font-semibold">Unlock free delivery</div>
+              <div className="text-xs text-muted-foreground">Shop for ₹99</div>
+            </div>
+          </div>
+          <Button className="rounded-xl px-4 py-1 text-sm">Shop now</Button>
+        </div>
       </div>
 
       <BottomNav />

@@ -133,6 +133,9 @@ const Profile = () => {
     );
   }
 
+  const displayName = (profile?.full_name || user?.user_metadata?.full_name || "User") as string;
+  const displayInitial = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <header className="bg-card border-b border-border px-4 md:px-6 py-6">
@@ -158,18 +161,18 @@ const Profile = () => {
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20 shrink-0">
               <AvatarImage src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`} />
-              <AvatarFallback>{profile?.full_name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
+              <AvatarFallback>{displayInitial || "U"}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-bold truncate">{profile?.full_name || "User"}</h2>
+              <h2 className="text-xl font-bold truncate">{displayName}</h2>
               <div className="space-y-0.5">
-                {user?.phone && (
-                  <p className="text-sm text-muted-foreground truncate">{user.phone}</p>
+                {(profile?.phone || user?.phone) && (
+                  <p className="text-sm text-muted-foreground truncate">{profile?.phone || user?.phone}</p>
                 )}
-                {user?.email && (
-                  <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+                {(profile?.email || user?.email) && (
+                  <p className="text-sm text-muted-foreground truncate">{profile?.email || user?.email}</p>
                 )}
-                {!user?.phone && !user?.email && (
+                {!(profile?.phone || user?.phone || profile?.email || user?.email) && (
                   <p className="text-sm text-muted-foreground">No contact info</p>
                 )}
               </div>

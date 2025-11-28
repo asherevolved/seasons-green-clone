@@ -49,16 +49,16 @@ export const EditProfileDialog = ({
     setIsLoading(true);
 
     try {
-      // Update profile in profiles table
+      
       const phoneWithPrefix = phone.trim() ? `+91${phone.trim()}` : null;
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({
+        .upsert({
+          id: user?.id,
           full_name: fullName.trim() || null,
           email: email.trim() || null,
           phone: phoneWithPrefix,
-        })
-        .eq("id", user?.id);
+        }, { onConflict: "id" });
 
       if (profileError) throw profileError;
 

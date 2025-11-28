@@ -5,11 +5,18 @@ import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Calendar as DatePicker } from "@/components/ui/calendar";
 
 const Bookings = () => {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+  const [newDate, setNewDate] = useState<Date | undefined>(new Date());
+  const [newTime, setNewTime] = useState("");
 
   useEffect(() => {
     fetchBookings();
@@ -37,6 +44,64 @@ const Bookings = () => {
     
     setBookings(data || []);
     setIsLoading(false);
+  };
+
+  const handleCancel = async (bookingId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    const { error } = await supabase
+      .from("bookings")
+      .update({ status: "cancelled" })
+      .eq("id", bookingId)
+      .eq("user_id", user.id);
+    if (error) return;
+    await fetchBookings();
+  };
+
+  const openReschedule = (booking: any) => {
+    setSelectedBooking(booking);
+    setNewDate(new Date(booking.start_time));
+    const d = new Date(booking.start_time);
+    const hh = `${d.getHours()}`.padStart(2, "0");
+    const mm = `${d.getMinutes()}`.padStart(2, "0");
+    setNewTime(`${hh}:${mm}`);
+    setRescheduleOpen(true);
+  };
+
+  const submitReschedule = async () => {
+    if (!selectedBooking || !newDate || !newTime) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { navigate("/auth"); return; }
+
+    const [hh, mm] = newTime.split(":").map(Number);
+    const start = new Date(newDate);
+    start.setHours(hh || 0, mm || 0, 0, 0);
+    const startIso = start.toISOString();
+
+    const { data: svc } = await supabase
+      .from("services")
+      .select("duration_minutes")
+      .eq("id", selectedBooking.service_id)
+      .maybeSingle();
+    const duration = typeof svc?.duration_minutes === "number" && svc.duration_minutes > 0 ? svc.duration_minutes : 60;
+    const end = new Date(start);
+    end.setMinutes(end.getMinutes() + duration);
+    const endIso = end.toISOString();
+
+    const { error } = await supabase
+      .from("bookings")
+      .update({ start_time: startIso, end_time: endIso, status: "confirmed" })
+      .eq("id", selectedBooking.id)
+      .eq("user_id", user.id);
+
+    if (!error) {
+      setRescheduleOpen(false);
+      setSelectedBooking(null);
+      await fetchBookings();
+    }
   };
 
   const upcomingBookings = bookings.filter(
@@ -110,13 +175,14 @@ const Bookings = () => {
                         </div>
                       </div>
                       <div className="flex gap-2 mt-3">
-                        <Button variant="outline" size="sm" className="flex-1">
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => openReschedule(booking)}>
                           Reschedule
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           className="flex-1 text-destructive"
+                          onClick={() => handleCancel(booking.id)}
                         >
                           Cancel
                         </Button>
@@ -168,6 +234,25 @@ const Bookings = () => {
       </main>
 
       <BottomNav />
+      <Dialog open={rescheduleOpen} onOpenChange={setRescheduleOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reschedule Booking</DialogTitle>
+            <DialogDescription>Select a new date and time</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <DatePicker mode="single" selected={newDate} onSelect={setNewDate} className="rounded-md border" />
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">Time</label>
+              <Input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRescheduleOpen(false)}>Cancel</Button>
+            <Button onClick={submitReschedule}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

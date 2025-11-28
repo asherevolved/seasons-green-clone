@@ -6,6 +6,7 @@ import { services } from "@/lib/data";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import lawnWideImg from "@/assets/lawn-wide.jpg";
 import hedgeWideImg from "@/assets/hedge-wide.jpg";
@@ -39,8 +40,14 @@ const Services = () => {
     ? services 
     : services.filter((s) => s.category === activeCategory);
 
-  const handleAddToCart = (service: any, event: React.MouseEvent) => {
+  const handleAddToCart = async (service: any, event: React.MouseEvent) => {
     event.stopPropagation();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.info("Please sign up or sign in to add services");
+      navigate("/auth");
+      return;
+    }
     addToCart(service);
     toast.success(
       <div className="flex items-center gap-2">

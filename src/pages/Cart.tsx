@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Cart = () => {
@@ -18,13 +19,76 @@ const Cart = () => {
   const serviceCharges = 200;
   const totalAmount = itemTotal + serviceCharges;
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     if (!date || !time) {
       toast.error("Please select date and time");
       return;
     }
-    toast.success("Booking confirmed!");
-    navigate("/bookings");
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Please sign in to book");
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      // Compose start_time from selected date and time
+      const [hh, mm] = time.split(":").map(Number);
+      const start = new Date(date);
+      start.setHours(hh || 0, mm || 0, 0, 0);
+      const startIso = start.toISOString();
+
+      // Create one booking per cart item
+      let successCount = 0;
+      for (const item of cart) {
+        // Find matching service in DB by title
+        const { data: svc } = await supabase
+          .from("services")
+          .select("id, duration_minutes")
+          .eq("title", item.service.title)
+          .maybeSingle();
+
+        if (!svc) {
+          toast.error(`Service not available: ${item.service.title}`);
+          continue;
+        }
+
+        const duration = typeof svc.duration_minutes === "number" && svc.duration_minutes > 0 ? svc.duration_minutes : 60;
+        const end = new Date(start);
+        end.setMinutes(end.getMinutes() + duration);
+        const endIso = end.toISOString();
+
+        const total = item.service.price * item.quantity;
+
+        const { error } = await supabase
+          .from("bookings")
+          .insert({
+            user_id: user.id,
+            service_id: svc.id,
+            start_time: startIso,
+            end_time: endIso,
+            status: "confirmed",
+            total_price: total,
+            notes: `Quantity: ${item.quantity}`,
+          });
+
+        if (error) {
+          toast.error(`Failed to book ${item.service.title}: ${error.message}`);
+        } else {
+          successCount += 1;
+        }
+      }
+
+      if (successCount > 0) {
+        toast.success("Booking confirmed!");
+        navigate("/bookings");
+      } else {
+        toast.error("No booking was created");
+      }
+    } catch {
+      toast.error("Could not create booking");
+    }
   };
 
   if (cart.length === 0) {
